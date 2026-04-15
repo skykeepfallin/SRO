@@ -5,592 +5,902 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>СРО — Студенческие защиты</title>
   <style>
-    /* ── Reset & Base ────────────────────────────────────────────── */
+    /* ── Reset ──────────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0d0f1a;
-      --surface: #141728;
-      --card: #1a1e35;
-      --card-hover: #1f2442;
-      --border: rgba(255,255,255,0.07);
-      --accent: #6c63ff;
-      --accent2: #a78bfa;
-      --gold: #f0c040;
-      --gold-dim: rgba(240,192,64,0.12);
-      --text: #e8eaf6;
-      --muted: #8b90b0;
-      --green: #34d399;
-      --blue: #60a5fa;
-      --rose: #f472b6;
-      --amber: #fbbf24;
-      --radius: 18px;
-      --shadow: 0 8px 40px rgba(0,0,0,0.55);
-      --transition: 0.28s cubic-bezier(.4,0,.2,1);
+      --white: #ffffff;
+      --off-white: #f5f5f5;
+      --light: #e8e8e8;
+      --mid: #999;
+      --dark: #333;
+      --black: #111;
+      --accent: #c0a060;
+      --radius: 2px;
+      --sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
+      font-family: var(--sans);
+      background: var(--white);
+      color: var(--dark);
       overflow-x: hidden;
     }
 
-    /* ── Background ──────────────────────────────────────────────── */
-    .bg-glow {
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background:
-        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(108,99,255,0.13) 0%, transparent 70%),
-        radial-gradient(ellipse 60% 50% at 80% 90%, rgba(167,139,250,0.09) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 40% at 60% 30%, rgba(240,192,64,0.06) 0%, transparent 60%);
+    a { text-decoration: none; color: inherit; }
+
+    /* ── NAV ─────────────────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px;
+      height: 64px;
+      background: rgba(15,15,15,0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
 
-    /* ── Header ──────────────────────────────────────────────────── */
-    header {
-      position: relative; z-index: 10;
-      padding: 72px 24px 56px;
+    .nav-logo {
+      border: 2px solid var(--white);
+      color: var(--white);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      line-height: 1;
+      padding: 8px 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
       text-align: center;
+      min-width: 44px;
     }
 
-    .badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--gold-dim);
-      border: 1px solid rgba(240,192,64,0.3);
-      border-radius: 999px;
-      padding: 6px 18px;
-      font-size: 12px; font-weight: 600; letter-spacing: 0.12em;
-      color: var(--gold); text-transform: uppercase;
-      margin-bottom: 28px;
-      animation: fadeDown 0.6s ease both;
+    .nav-links {
+      display: flex; gap: 36px; list-style: none;
     }
 
-    .badge span { font-size: 16px; }
-
-    h1 {
-      font-size: clamp(2.4rem, 6vw, 4.2rem);
-      font-weight: 800; line-height: 1.1;
-      letter-spacing: -0.03em;
-      background: linear-gradient(135deg, #fff 30%, var(--accent2) 80%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: fadeDown 0.7s 0.1s ease both;
+    .nav-links a {
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      transition: opacity 0.2s;
     }
 
-    .subtitle {
-      margin-top: 18px;
-      font-size: clamp(1rem, 2.5vw, 1.25rem);
-      color: var(--muted);
-      max-width: 540px; margin-inline: auto;
-      animation: fadeDown 0.7s 0.2s ease both;
+    .nav-links a:hover,
+    .nav-links a.active { opacity: 1; }
+
+    .nav-links a.active { color: var(--accent); }
+
+    /* ── HERO ────────────────────────────────────────────────────────── */
+    #hero {
+      position: relative;
+      height: 100vh; min-height: 600px;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      overflow: hidden;
     }
 
-    .stats-row {
-      display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;
-      margin-top: 40px;
-      animation: fadeDown 0.7s 0.3s ease both;
+    /* Background: layered CSS gradients mimicking a moody photo */
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        linear-gradient(160deg, rgba(30,25,20,0.92) 0%, rgba(10,10,10,0.78) 100%),
+        repeating-linear-gradient(
+          120deg,
+          rgba(255,255,255,0.015) 0px,
+          rgba(255,255,255,0.015) 1px,
+          transparent 1px,
+          transparent 60px
+        ),
+        radial-gradient(ellipse 90% 70% at 70% 40%, #3a3028 0%, #1a1510 60%, #0a0a0a 100%);
     }
 
-    .stat {
-      display: flex; flex-direction: column; align-items: center; gap: 4px;
+    /* Subtle vignette */
+    .hero-vignette {
+      position: absolute; inset: 0; z-index: 1;
+      background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, rgba(0,0,0,0.55) 100%);
     }
 
-    .stat-value {
-      font-size: 2rem; font-weight: 800;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .stat-label {
-      font-size: 0.8rem; color: var(--muted); font-weight: 500;
-      text-transform: uppercase; letter-spacing: 0.08em;
-    }
-
-    .divider {
-      width: 1px; height: 48px; background: var(--border);
-      align-self: center;
-    }
-
-    /* ── Search ───────────────────────────────────────────────────── */
-    .search-wrap {
-      position: relative; z-index: 10;
-      max-width: 480px; margin: 0 auto 52px;
+    .hero-content {
+      position: relative; z-index: 2;
       padding: 0 24px;
-      animation: fadeDown 0.7s 0.35s ease both;
     }
 
-    .search-icon {
-      position: absolute; left: 40px; top: 50%;
-      transform: translateY(-50%);
-      color: var(--muted); pointer-events: none;
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+      animation: fadeIn 0.8s 0.2s ease both;
     }
+
+    .hero-title {
+      font-size: clamp(3rem, 9vw, 8rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 0.95;
+      color: var(--white);
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      animation: fadeIn 0.9s 0.35s ease both;
+    }
+
+    .hero-sub {
+      font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+      color: rgba(255,255,255,0.55);
+      max-width: 560px;
+      margin: 0 auto 44px;
+      line-height: 1.7;
+      animation: fadeIn 0.9s 0.5s ease both;
+    }
+
+    .hero-btns {
+      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+      animation: fadeIn 0.9s 0.65s ease both;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 15px 40px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .btn-outline {
+      border: 2px solid rgba(255,255,255,0.7);
+      color: var(--white);
+      background: transparent;
+    }
+
+    .btn-outline:hover {
+      background: var(--white);
+      color: var(--black);
+    }
+
+    .btn-fill {
+      border: 2px solid var(--white);
+      background: var(--white);
+      color: var(--black);
+    }
+
+    .btn-fill:hover {
+      background: transparent;
+      color: var(--white);
+    }
+
+    /* Scroll indicator */
+    .scroll-hint {
+      position: absolute; bottom: 32px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      animation: fadeIn 1s 1s ease both;
+    }
+
+    .scroll-hint span {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.2em;
+      text-transform: uppercase; color: rgba(255,255,255,0.4);
+    }
+
+    .scroll-arrow {
+      width: 28px; height: 28px;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      animation: bounce 2s infinite;
+    }
+
+    .scroll-arrow svg { color: rgba(255,255,255,0.5); }
+
+    /* ── SECTION SHARED ──────────────────────────────────────────────── */
+    section { padding: 96px 48px; }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      text-transform: uppercase;
+      color: var(--black);
+      margin-bottom: 16px;
+    }
+
+    .section-line {
+      width: 48px; height: 3px;
+      background: var(--black);
+      margin-bottom: 52px;
+    }
+
+    /* ── STATS ROW ───────────────────────────────────────────────────── */
+    #stats {
+      background: var(--black);
+      padding: 56px 48px;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .stat-item {
+      flex: 1; max-width: 220px;
+      text-align: center;
+      padding: 0 32px;
+      border-right: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .stat-item:last-child { border-right: none; }
+
+    .stat-num {
+      font-size: clamp(2.4rem, 5vw, 3.5rem);
+      font-weight: 900;
+      color: var(--white);
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* ── STUDENTS ────────────────────────────────────────────────────── */
+    #students {
+      background: var(--off-white);
+      padding: 96px 48px;
+    }
+
+    .students-header {
+      max-width: 1200px; margin: 0 auto 64px;
+    }
+
+    /* Search */
+    .search-row {
+      display: flex; align-items: center;
+      border-bottom: 2px solid var(--black);
+      padding-bottom: 12px;
+      max-width: 400px;
+      gap: 12px;
+    }
+
+    .search-row svg { flex-shrink: 0; color: var(--mid); }
 
     #search {
-      width: 100%;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 14px 20px 14px 48px;
-      font-size: 0.95rem; color: var(--text);
-      outline: none;
-      transition: border-color var(--transition), box-shadow var(--transition);
+      flex: 1;
+      background: none;
+      border: none; outline: none;
+      font-size: 0.95rem;
+      font-family: var(--sans);
+      color: var(--black);
+      letter-spacing: 0.04em;
     }
 
-    #search::placeholder { color: var(--muted); }
-    #search:focus {
-      border-color: rgba(108,99,255,0.5);
-      box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
-    }
+    #search::placeholder { color: var(--mid); }
 
-    /* ── Grid ─────────────────────────────────────────────────────── */
-    .grid {
-      position: relative; z-index: 10;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 24px;
+    /* Grid */
+    .students-grid {
       max-width: 1200px; margin: 0 auto;
-      padding: 0 24px 80px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2px;
     }
 
-    /* ── Student Card ─────────────────────────────────────────────── */
+    /* Card */
     .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+      background: var(--white);
       overflow: hidden;
-      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition), background var(--transition);
-      animation: fadeUp 0.5s ease both;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
       cursor: default;
     }
 
     .card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow), 0 0 0 1px rgba(108,99,255,0.2);
-      border-color: rgba(108,99,255,0.25);
-      background: var(--card-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+      z-index: 2;
     }
 
-    /* Photo area */
+    /* Photo */
     .card-photo {
-      position: relative;
-      height: 200px;
+      height: 240px;
       overflow: hidden;
-      background: linear-gradient(135deg, #1a1e35, #0d1030);
+      background: var(--light);
+      position: relative;
     }
 
     .card-photo img {
       width: 100%; height: 100%;
       object-fit: cover; object-position: top center;
-      transition: transform 0.6s ease;
-      filter: brightness(0.95);
+      display: block;
+      transition: transform 0.5s ease;
+      filter: grayscale(20%);
     }
 
-    .card:hover .card-photo img { transform: scale(1.05); }
+    .card:hover .card-photo img { transform: scale(1.04); filter: grayscale(0%); }
 
-    /* Avatar placeholder */
-    .avatar-placeholder {
+    /* Avatar */
+    .avatar-wrap {
       width: 100%; height: 100%;
       display: flex; align-items: center; justify-content: center;
-      background: linear-gradient(135deg, rgba(108,99,255,0.15), rgba(167,139,250,0.08));
+      background: var(--light);
     }
 
-    .avatar-letter {
-      width: 88px; height: 88px;
+    .avatar-circle {
+      width: 90px; height: 90px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      background: var(--black);
       display: flex; align-items: center; justify-content: center;
-      font-size: 2.4rem; font-weight: 800; color: #fff;
-      box-shadow: 0 8px 32px rgba(108,99,255,0.5);
-    }
-
-    /* Color overlay on photo */
-    .card-photo::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(to bottom, transparent 50%, rgba(26,30,53,0.95) 100%);
-      pointer-events: none;
-    }
-
-    /* Card body */
-    .card-body { padding: 22px 22px 20px; }
-
-    .student-name {
-      font-size: 1.35rem; font-weight: 700;
-      margin-bottom: 6px;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--white);
       letter-spacing: -0.02em;
     }
 
-    .student-meta {
-      font-size: 0.82rem; color: var(--muted); font-weight: 500;
-      margin-bottom: 18px;
-      display: flex; align-items: center; gap: 6px;
+    /* Index number overlay */
+    .card-index {
+      position: absolute; top: 16px; left: 16px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+      color: rgba(255,255,255,0.9);
+      background: rgba(0,0,0,0.45);
+      padding: 4px 10px;
+      text-transform: uppercase;
     }
 
-    .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+    /* Card body */
+    .card-body { padding: 24px; }
+
+    .card-name {
+      font-size: 1.4rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      color: var(--black);
+      margin-bottom: 4px;
+    }
+
+    .card-type {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 20px;
+    }
+
+    /* Divider */
+    .card-divider {
+      height: 1px;
+      background: var(--light);
+      margin-bottom: 16px;
+    }
 
     /* Files */
-    .files-label {
-      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--muted);
-      margin-bottom: 10px;
-    }
-
-    .files-list {
-      display: flex; flex-direction: column; gap: 8px;
-    }
-
-    .file-link {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 14px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 10px;
+    .file-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--light);
       text-decoration: none;
-      color: var(--text);
-      font-size: 0.85rem; font-weight: 500;
-      transition: background var(--transition), border-color var(--transition), color var(--transition);
-      overflow: hidden;
+      color: var(--dark);
+      transition: color 0.2s;
     }
 
-    .file-link:hover {
-      background: rgba(108,99,255,0.12);
-      border-color: rgba(108,99,255,0.35);
-      color: var(--accent2);
-    }
+    .file-item:last-child { border-bottom: none; }
 
-    .file-icon {
+    .file-item:hover { color: var(--black); }
+
+    .file-item:hover .file-pill { background: var(--black); color: var(--white); }
+
+    .file-pill {
       flex-shrink: 0;
-      width: 30px; height: 30px;
-      border-radius: 7px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 9px;
+      background: var(--light);
+      color: var(--dark);
+      border-radius: var(--radius);
+      transition: all 0.2s;
+      min-width: 44px;
+      text-align: center;
     }
 
-    .file-icon.pdf  { background: rgba(244,63,94,0.18); color: #f87171; }
-    .file-icon.docx { background: rgba(96,165,250,0.18); color: #60a5fa; }
-    .file-icon.pptx { background: rgba(251,146,60,0.18); color: #fb923c; }
+    .file-pill.pdf  { background: #fde8e8; color: #c0392b; }
+    .file-pill.pptx { background: #fef0e0; color: #c0720a; }
+    .file-pill.docx { background: #e0eaff; color: #1a4aaa; }
 
-    .file-name {
-      flex: 1; min-width: 0;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    .file-item:hover .file-pill.pdf  { background: #c0392b; color: #fff; }
+    .file-item:hover .file-pill.pptx { background: #c0720a; color: #fff; }
+    .file-item:hover .file-pill.docx { background: #1a4aaa; color: #fff; }
+
+    .file-text {
+      flex: 1;
+      font-size: 0.82rem;
+      font-weight: 500;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
-    .file-dl {
-      flex-shrink: 0; opacity: 0;
-      transition: opacity var(--transition);
-      color: var(--accent2);
+    .file-arrow {
+      flex-shrink: 0;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      color: var(--mid);
     }
 
-    .file-link:hover .file-dl { opacity: 1; }
+    .file-item:hover .file-arrow {
+      opacity: 1;
+      transform: translateX(3px);
+    }
 
-    /* ── No results ───────────────────────────────────────────────── */
+    /* No results */
     .no-results {
       grid-column: 1/-1;
-      text-align: center; padding: 60px 0;
-      color: var(--muted); font-size: 1.1rem;
+      padding: 80px 0;
+      text-align: center;
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mid);
       display: none;
     }
 
-    /* ── Footer ───────────────────────────────────────────────────── */
+    /* ── ABOUT ───────────────────────────────────────────────────────── */
+    #about {
+      background: var(--white);
+      display: flex;
+      gap: 80px;
+      align-items: flex-start;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .about-left { flex: 1; }
+    .about-right {
+      flex: 1;
+      padding-top: 56px;
+      display: flex; flex-direction: column; gap: 32px;
+    }
+
+    .about-body {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: #555;
+      max-width: 520px;
+    }
+
+    .about-feature {
+      display: flex; gap: 20px; align-items: flex-start;
+    }
+
+    .feat-icon {
+      width: 44px; height: 44px; flex-shrink: 0;
+      background: var(--black);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+
+    .feat-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      color: var(--black);
+    }
+
+    .feat-desc {
+      font-size: 0.85rem;
+      color: var(--mid);
+      line-height: 1.6;
+    }
+
+    /* ── FOOTER ──────────────────────────────────────────────────────── */
     footer {
-      position: relative; z-index: 10;
+      background: var(--black);
+      padding: 40px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+
+    .footer-logo {
+      border: 2px solid rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.6);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 6px 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
       text-align: center;
-      padding: 28px 24px;
-      border-top: 1px solid var(--border);
-      color: var(--muted); font-size: 0.82rem;
     }
 
-    footer strong { color: var(--accent2); }
+    .footer-copy {
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
 
-    /* ── Animations ───────────────────────────────────────────────── */
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-16px); }
+    /* ── ANIMATIONS ──────────────────────────────────────────────────── */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(18px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(5px); }
     }
 
-    /* stagger cards */
-    .card:nth-child(1)  { animation-delay: 0.05s; }
-    .card:nth-child(2)  { animation-delay: 0.10s; }
-    .card:nth-child(3)  { animation-delay: 0.15s; }
-    .card:nth-child(4)  { animation-delay: 0.20s; }
-    .card:nth-child(5)  { animation-delay: 0.25s; }
-    .card:nth-child(6)  { animation-delay: 0.30s; }
-    .card:nth-child(7)  { animation-delay: 0.35s; }
-    .card:nth-child(8)  { animation-delay: 0.40s; }
-    .card:nth-child(9)  { animation-delay: 0.45s; }
-    .card:nth-child(10) { animation-delay: 0.50s; }
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    /* ── Responsive ───────────────────────────────────────────────── */
-    @media (max-width: 640px) {
-      .stats-row { gap: 20px; }
-      .divider { display: none; }
-      .grid { grid-template-columns: 1fr; }
+    /* ── RESPONSIVE ──────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      nav { padding: 0 24px; }
+      .nav-links { gap: 20px; }
+      section, #students { padding: 72px 24px; }
+      footer { padding: 32px 24px; }
+      #stats { flex-wrap: wrap; gap: 32px; }
+      .stat-item { border-right: none; }
+      #about { flex-direction: column; gap: 40px; }
+      .students-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .nav-links { display: none; }
     }
   </style>
 </head>
 <body>
 
-<div class="bg-glow"></div>
+<!-- ── NAV ────────────────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-logo">
+    <span>СР</span><span>О</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#hero" class="active">Главная</a></li>
+    <li><a href="#students">Студенты</a></li>
+    <li><a href="#about">О проекте</a></li>
+  </ul>
+</nav>
 
-<!-- ── Header ──────────────────────────────────────────────────────── -->
-<header>
-  <div class="badge"><span>🎓</span> Самостоятельная работа обучающихся</div>
-  <h1>Студенческие&nbsp;защиты</h1>
-  <p class="subtitle">Материалы СРО — презентации, отчёты и доклады студентов группы</p>
+<!-- ── HERO ───────────────────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-vignette"></div>
 
-  <div class="stats-row">
-    <div class="stat">
-      <span class="stat-value" id="studentCount">9</span>
-      <span class="stat-label">Студентов</span>
-    </div>
-    <div class="divider"></div>
-    <div class="stat">
-      <span class="stat-value" id="docCount">16</span>
-      <span class="stat-label">Документов</span>
-    </div>
-    <div class="divider"></div>
-    <div class="stat">
-      <span class="stat-value">2026</span>
-      <span class="stat-label">Учебный год</span>
+  <div class="hero-content">
+    <span class="hero-eyebrow">Самостоятельная работа обучающихся</span>
+    <h1 class="hero-title">Студенческие<br>защиты</h1>
+    <p class="hero-sub">
+      Материалы СРО — презентации, отчёты и научные доклады
+      студентов группы 2025–2026 учебного года.
+    </p>
+    <div class="hero-btns">
+      <a href="#students" class="btn btn-outline">Посмотреть работы</a>
+      <a href="#about" class="btn btn-fill">О проекте</a>
     </div>
   </div>
-</header>
 
-<!-- ── Search ───────────────────────────────────────────────────────── -->
-<div class="search-wrap">
-  <svg class="search-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-  </svg>
-  <input id="search" type="text" placeholder="Поиск по имени студента…" autocomplete="off" />
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-arrow">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS ──────────────────────────────────────────────────────────── -->
+<div id="stats">
+  <div class="stat-item reveal">
+    <div class="stat-num">9</div>
+    <div class="stat-lbl">Студентов</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">16</div>
+    <div class="stat-lbl">Документов</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">3</div>
+    <div class="stat-lbl">Формата файлов</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-num">2026</div>
+    <div class="stat-lbl">Учебный год</div>
+  </div>
 </div>
 
-<!-- ── Grid ─────────────────────────────────────────────────────────── -->
-<div class="grid" id="grid">
+<!-- ── STUDENTS ───────────────────────────────────────────────────────── -->
+<section id="students">
+  <div class="students-header reveal">
+    <div class="section-label">Работы студентов</div>
+    <h2 class="section-title">Материалы</h2>
+    <div class="section-line"></div>
 
-  <!-- Adil -->
-  <div class="card" data-name="adil">
-    <div class="card-photo">
-      <div class="avatar-placeholder">
-        <div class="avatar-letter">A</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="student-name">Адил</div>
-      <div class="student-meta"><span class="dot"></span>SRS + Практика</div>
-      <div class="files-label">Материалы</div>
-      <div class="files-list">
-        <a class="file-link" href="SRS%20Adil.docx" download>
-          <span class="file-icon docx">📄</span>
-          <span class="file-name">SRS Adil.docx</span>
-          <svg class="file-dl" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </a>
-        <a class="file-link" href="Adil_practika%20.docx" download>
-          <span class="file-icon docx">📄</span>
-          <span class="file-name">Adil_practika.docx</span>
-          <svg class="file-dl" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </a>
-      </div>
+    <div class="search-row">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input id="search" type="text" placeholder="Найти студента…" autocomplete="off" />
     </div>
   </div>
 
-  <!-- Adiya -->
-  <div class="card" data-name="adiya">
-    <div class="card-photo">
-      <div class="avatar-placeholder">
-        <div class="avatar-letter" style="background: linear-gradient(135deg,#f472b6,#a78bfa)">A</div>
+  <div class="students-grid" id="grid">
+
+    <!-- 1. Adil -->
+    <div class="card reveal" data-name="adil адил">
+      <div class="card-photo">
+        <div class="avatar-wrap"><div class="avatar-circle">A</div></div>
+        <span class="card-index">01 / Adil</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Адил</div>
+        <div class="card-type">SRS + Практика</div>
+        <div class="card-divider"></div>
+        <a class="file-item" href="https://raw.githubusercontent.com/skykeepfallin/SRO/main/SRS%20Adil.docx" download="SRS Adil.docx">
+          <span class="file-pill docx">DOCX</span>
+          <span class="file-text">SRS Adil.docx</span>
+          <svg class="file-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </a>
+        <a class="file-item" href="https://raw.githubusercontent.com/skykeepfallin/SRO/main/Adil_practika%20.docx" download="Adil_practika.docx">
+          <span class="file-pill docx">DOCX</span>
+          <span class="file-text">Adil_practika.docx</span>
+          <svg class="file-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </a>
       </div>
     </div>
-    <div class="card-body">
-      <div class="student-name">Адия</div>
-      <div class="student-meta"><span class="dot"></span>SRS</div>
-      <div class="files-label">Материалы</div>
-      <div class="files-list">
-        <a class="file-link" href="SRS%20Adiya.pdf" target="_blank">
-          <span class="file-icon pdf">📕</span>
-          <span class="file-name">SRS Adiya.pdf</span>
-          <svg class="file-dl" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+
+    <!-- 2. Adiya -->
+    <div class="card reveal" data-name="adiya адия">
+      <div class="card-photo">
+        <div class="avatar-wrap"><div class="avatar-circle">A</div></div>
+        <span class="card-index">02 / Adiya</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Адия</div>
+        <div class="card-type">SRS</div>
+        <div class="card-divider"></div>
+        <a class="file-item" href="https://raw.githubusercontent.com/skykeepfallin/SRO/main/SRS%20Adiya.pdf" download="SRS Adiya.pdf">
+          <span class="file-pill pdf">PDF</span>
+          <span class="file-text">SRS Adiya.pdf</span>
+          <svg class="file-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         </a>
+      </div>
+    </div>
+
+    <!-- 3. Aida -->
+    <div class="card reveal" data-name="aida аида">
+      <div class="card-photo">
+        <img src="https://raw.githubusercontent.com/skykeepfallin/SRO/main/%D0%90%D0%B8%D0%B4%D0%B0.jpeg" alt="Аида" loading="lazy"
+             onerror="this.parentElement.innerHTML='<div class=\'avatar-wrap\'><div class=\'avatar-circle\'>А</div></div>'" />
+        <span class="card-index">03 / Aida</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Аида</div>
+        <div class="card-type">SRS</div>
+        <div class="card-divider"></div>
+        <a class="file-item" href="https://raw.githubusercontent.com/skykeepfallin/SRO/main/SRS%20Aida.docx" download="SRS Aida.docx">
+          <span class="file-pill docx">DOCX</span>
+          <span class="file-text">SRS Aida.docx</span>
+          <svg class="file-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- 4. Rasul -->
+    <div class="card reveal" data-name="rasul расул">
+      <div class="card-photo">
+        <div class="avatar-wrap"><div class="avatar-circle">R</div></div>
+        <span class="card-index">04 / Rasul</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Расул</div>
+        <div class="card-type">SRS</div>
+        <div class="card-divider"></div>
+        <a class="file-item" href="https://raw.githubusercontent.com/skykeepfallin/SRO/main/SRS%20Rasul.pdf" download="SRS Rasul.pdf">
+          <span class="file-pill pdf">PDF</span>
+          <span class="file-text">SRS Rasul.pdf</span>
+          <svg class="file-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- 5. Sarvi -->
+    <div class="card reveal" data-name="sarvi сарви">
+      <div class="card-photo">
+        <div class="avatar-wrap"><div class="avatar-circle">S</div></div>
+        <span class="card-index">05 / Sarvi</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Сарви</div>
+        <div class="card-type">SRS</div>
+        <div class="card-divider"></div>
+        <a class="file-item" href="https://raw.githubusercontent.com/skykeepfallin/SRO/main/SRS%20Sarvi.pdf" download="SRS Sarvi.pdf">
+          <span class="file-pill pdf">PDF</span>
+          <span class="file-text">SRS Sarvi.pdf</span>
+          <svg class="file-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- 6. Sayat -->
+    <div class="card reveal" data-name="sayat саят">
+      <div class="card-photo">
+        <img src="https://raw.githubusercontent.com/skykeepfallin/SRO/main/%D0%A1%D0%B0%D1%8F%D1%82.jpeg" alt="Саят" loading="lazy"
+             onerror="this.parentElement.innerHTML='<div class=\'avatar-wrap\'><div class=\'avatar-circle\'>С</div></div>'" />
+        <span class="card-index">06 / Sayat</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Саят</div>
+        <div class="card-type">SRS + Доклад</div>
+        <div class="card-divider"></div>
+        <a class="file-item" href="https://raw.githubusercontent.com/skykeepfallin/SRO/main/SRS%20Sayat.pptx" download="SRS Sayat.pptx">
+          <span class="file-pill pptx">PPTX</span>
+          <span class="file-text">SRS Sayat.pptx</span>
+          <svg class="file-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </a>
+        <a class="file-item" href="https://raw.githubusercontent.com/skykeepfallin/SRO/main/SRS%20Sayat%20doklad.docx" download="SRS Sayat doklad.docx">
+          <span class="file-pill docx">DOCX</span>
+          <span class="file-text">SRS Sayat doklad.docx</span>
+          <svg class="file-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- 7. Temirlan -->
+    <div class="card reveal" data-name="temirlan темирлан">
+      <div class="card-photo">
+        <img src="https://raw.githubusercontent.com/skykeepfallin/SRO/main/Temirlan.jpg" alt="Темирлан" loading="lazy"
+             onerror="this.parentElement.innerHTML='<div class=\'avatar-wrap\'><div class=\'avatar-circle\'>Т</div></div>'" />
+        <span class="card-index">07 / Temirlan</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Темирлан</div>
+        <div class="card-type">SRS + Презентация</div>
+        <div class="card-divider"></div>
+        <a class="file-item" href="https://raw.githubusercontent.com/skykeepfallin/SRO/main/SRS%20Temirlan%201-12%2C%2014-15.pptx" download="SRS Temirlan 1-12, 14-15.pptx">
+          <span class="file-pill pptx">PPTX</span>
+          <span class="file-text">SRS Temirlan 1-12, 14-15.pptx</span>
+          <svg class="file-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </a>
+        <a class="file-item" href="https://raw.githubusercontent.com/skykeepfallin/SRO/main/SRS%20Temirlan%2013.docx" download="SRS Temirlan 13.docx">
+          <span class="file-pill docx">DOCX</span>
+          <span class="file-text">SRS Temirlan 13.docx</span>
+          <svg class="file-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- 8. Vitya -->
+    <div class="card reveal" data-name="vitya витя">
+      <div class="card-photo">
+        <img src="https://raw.githubusercontent.com/skykeepfallin/SRO/main/Vitya.jpg" alt="Витя" loading="lazy"
+             onerror="this.parentElement.innerHTML='<div class=\'avatar-wrap\'><div class=\'avatar-circle\'>V</div></div>'" />
+        <span class="card-index">08 / Vitya</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Витя</div>
+        <div class="card-type">SRS + Презентация</div>
+        <div class="card-divider"></div>
+        <a class="file-item" href="https://raw.githubusercontent.com/skykeepfallin/SRO/main/SRS%20Vitya%201-12%2C14-15.pptx" download="SRS Vitya 1-12,14-15.pptx">
+          <span class="file-pill pptx">PPTX</span>
+          <span class="file-text">SRS Vitya 1-12,14-15.pptx</span>
+          <svg class="file-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </a>
+        <a class="file-item" href="https://raw.githubusercontent.com/skykeepfallin/SRO/main/SRS%20Vitya%2013.docx" download="SRS Vitya 13.docx">
+          <span class="file-pill docx">DOCX</span>
+          <span class="file-text">SRS Vitya 13.docx</span>
+          <svg class="file-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- 9. Zhasmin -->
+    <div class="card reveal" data-name="zhasmin жасмин">
+      <div class="card-photo">
+        <div class="avatar-wrap"><div class="avatar-circle">Ж</div></div>
+        <span class="card-index">09 / Zhasmin</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">Жасмин</div>
+        <div class="card-type">SRS</div>
+        <div class="card-divider"></div>
+        <a class="file-item" href="https://raw.githubusercontent.com/skykeepfallin/SRO/main/SRS%20Zhasmin.docx" download="SRS Zhasmin.docx">
+          <span class="file-pill docx">DOCX</span>
+          <span class="file-text">SRS Zhasmin.docx</span>
+          <svg class="file-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="no-results" id="noResults">Студент не найден</div>
+  </div>
+</section>
+
+<!-- ── ABOUT ───────────────────────────────────────────────────────────── -->
+<div style="padding: 96px 48px; background: var(--white);">
+  <div id="about" style="max-width:1200px; margin:0 auto; display:flex; gap:80px; align-items:flex-start; flex-wrap:wrap;">
+    <div class="about-left reveal" style="flex:1; min-width:280px;">
+      <div class="section-label">О проекте</div>
+      <h2 class="section-title">СРО<br>2025–2026</h2>
+      <div class="section-line"></div>
+      <p class="about-body">
+        Самостоятельная работа обучающихся (СРО) — форма учебной деятельности,
+        направленная на развитие навыков самостоятельного исследования
+        и подготовки научно-технической документации.<br><br>
+        На этой странице представлены итоговые материалы: технические задания,
+        исследовательские отчёты и защитные презентации студентов группы.
+      </p>
+    </div>
+    <div class="about-right reveal" style="flex:1; min-width:280px; display:flex; flex-direction:column; gap:28px; padding-top:56px;">
+      <div class="about-feature">
+        <div class="feat-icon">📄</div>
+        <div>
+          <div class="feat-title">Технические задания</div>
+          <div class="feat-desc">SRS-документы, описывающие требования к программным системам каждого студента.</div>
+        </div>
+      </div>
+      <div class="about-feature">
+        <div class="feat-icon">📊</div>
+        <div>
+          <div class="feat-title">Презентации</div>
+          <div class="feat-desc">Защитные слайды в формате PPTX для публичного представления работы.</div>
+        </div>
+      </div>
+      <div class="about-feature">
+        <div class="feat-icon">🎓</div>
+        <div>
+          <div class="feat-title">Доклады</div>
+          <div class="feat-desc">Текстовые доклады, сопровождающие защиту проекта перед комиссией.</div>
+        </div>
       </div>
     </div>
   </div>
-
-  <!-- Aida -->
-  <div class="card" data-name="aida">
-    <div class="card-photo">
-      <img src="%D0%90%D0%B8%D0%B4%D0%B0.jpeg" alt="Аида" loading="lazy"
-           onerror="this.parentElement.innerHTML='<div class=\'avatar-placeholder\'><div class=\'avatar-letter\' style=\'background:linear-gradient(135deg,#34d399,#60a5fa)\'>А</div></div>'" />
-    </div>
-    <div class="card-body">
-      <div class="student-name">Аида</div>
-      <div class="student-meta"><span class="dot"></span>SRS</div>
-      <div class="files-label">Материалы</div>
-      <div class="files-list">
-        <a class="file-link" href="SRS%20Aida.docx" download>
-          <span class="file-icon docx">📄</span>
-          <span class="file-name">SRS Aida.docx</span>
-          <svg class="file-dl" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Rasul -->
-  <div class="card" data-name="rasul">
-    <div class="card-photo">
-      <div class="avatar-placeholder">
-        <div class="avatar-letter" style="background: linear-gradient(135deg,#fbbf24,#f87171)">R</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="student-name">Расул</div>
-      <div class="student-meta"><span class="dot"></span>SRS</div>
-      <div class="files-label">Материалы</div>
-      <div class="files-list">
-        <a class="file-link" href="SRS%20Rasul.pdf" target="_blank">
-          <span class="file-icon pdf">📕</span>
-          <span class="file-name">SRS Rasul.pdf</span>
-          <svg class="file-dl" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Sarvi -->
-  <div class="card" data-name="sarvi">
-    <div class="card-photo">
-      <div class="avatar-placeholder">
-        <div class="avatar-letter" style="background: linear-gradient(135deg,#fb923c,#f472b6)">S</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="student-name">Сарви</div>
-      <div class="student-meta"><span class="dot"></span>SRS</div>
-      <div class="files-label">Материалы</div>
-      <div class="files-list">
-        <a class="file-link" href="SRS%20Sarvi.pdf" target="_blank">
-          <span class="file-icon pdf">📕</span>
-          <span class="file-name">SRS Sarvi.pdf</span>
-          <svg class="file-dl" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Sayat -->
-  <div class="card" data-name="sayat саят">
-    <div class="card-photo">
-      <img src="%D0%A1%D0%B0%D1%8F%D1%82.jpeg" alt="Саят" loading="lazy"
-           onerror="this.parentElement.innerHTML='<div class=\'avatar-placeholder\'><div class=\'avatar-letter\' style=\'background:linear-gradient(135deg,#34d399,#3b82f6)\'>С</div></div>'" />
-    </div>
-    <div class="card-body">
-      <div class="student-name">Саят</div>
-      <div class="student-meta"><span class="dot"></span>SRS + Доклад</div>
-      <div class="files-label">Материалы</div>
-      <div class="files-list">
-        <a class="file-link" href="SRS%20Sayat.pptx" download>
-          <span class="file-icon pptx">📊</span>
-          <span class="file-name">SRS Sayat.pptx</span>
-          <svg class="file-dl" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </a>
-        <a class="file-link" href="SRS%20Sayat%20doklad.docx" download>
-          <span class="file-icon docx">📄</span>
-          <span class="file-name">SRS Sayat doklad.docx</span>
-          <svg class="file-dl" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Temirlan -->
-  <div class="card" data-name="temirlan темирлан">
-    <div class="card-photo">
-      <img src="Temirlan.jpg" alt="Темирлан" loading="lazy"
-           onerror="this.parentElement.innerHTML='<div class=\'avatar-placeholder\'><div class=\'avatar-letter\' style=\'background:linear-gradient(135deg,#a78bfa,#6c63ff)\'>Т</div></div>'" />
-    </div>
-    <div class="card-body">
-      <div class="student-name">Темирлан</div>
-      <div class="student-meta"><span class="dot"></span>SRS + Презентация</div>
-      <div class="files-label">Материалы</div>
-      <div class="files-list">
-        <a class="file-link" href="SRS%20Temirlan%201-12%2C%2014-15.pptx" download>
-          <span class="file-icon pptx">📊</span>
-          <span class="file-name">SRS Temirlan 1-12, 14-15.pptx</span>
-          <svg class="file-dl" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </a>
-        <a class="file-link" href="SRS%20Temirlan%2013.docx" download>
-          <span class="file-icon docx">📄</span>
-          <span class="file-name">SRS Temirlan 13.docx</span>
-          <svg class="file-dl" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Vitya -->
-  <div class="card" data-name="vitya витя">
-    <div class="card-photo">
-      <img src="Vitya.jpg" alt="Витя" loading="lazy"
-           onerror="this.parentElement.innerHTML='<div class=\'avatar-placeholder\'><div class=\'avatar-letter\' style=\'background:linear-gradient(135deg,#60a5fa,#34d399)\'>V</div></div>'" />
-    </div>
-    <div class="card-body">
-      <div class="student-name">Витя</div>
-      <div class="student-meta"><span class="dot"></span>SRS + Презентация</div>
-      <div class="files-label">Материалы</div>
-      <div class="files-list">
-        <a class="file-link" href="SRS%20Vitya%201-12%2C14-15.pptx" download>
-          <span class="file-icon pptx">📊</span>
-          <span class="file-name">SRS Vitya 1-12,14-15.pptx</span>
-          <svg class="file-dl" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </a>
-        <a class="file-link" href="SRS%20Vitya%2013.docx" download>
-          <span class="file-icon docx">📄</span>
-          <span class="file-name">SRS Vitya 13.docx</span>
-          <svg class="file-dl" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Zhasmin -->
-  <div class="card" data-name="zhasmin жасмин">
-    <div class="card-photo">
-      <div class="avatar-placeholder">
-        <div class="avatar-letter" style="background: linear-gradient(135deg,#f472b6,#fbbf24)">Ж</div>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="student-name">Жасмин</div>
-      <div class="student-meta"><span class="dot"></span>SRS</div>
-      <div class="files-label">Материалы</div>
-      <div class="files-list">
-        <a class="file-link" href="SRS%20Zhasmin.docx" download>
-          <span class="file-icon docx">📄</span>
-          <span class="file-name">SRS Zhasmin.docx</span>
-          <svg class="file-dl" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <div class="no-results" id="noResults">Студент не найден 🔍</div>
 </div>
 
-<!-- ── Footer ────────────────────────────────────────────────────────── -->
+<!-- ── FOOTER ──────────────────────────────────────────────────────────── -->
 <footer>
-  <strong>СРО 2026</strong> &mdash; Материалы студенческих защит
+  <div class="footer-logo">
+    <span>СР</span><span>О</span>
+  </div>
+  <span class="footer-copy">СРО 2026 &mdash; Студенческие защиты</span>
 </footer>
 
 <script>
+  /* ── Search ── */
   const search = document.getElementById('search');
   const cards  = document.querySelectorAll('.card[data-name]');
   const noRes  = document.getElementById('noResults');
@@ -598,15 +908,38 @@
   search.addEventListener('input', () => {
     const q = search.value.trim().toLowerCase();
     let visible = 0;
-
     cards.forEach(card => {
-      const name = card.dataset.name || '';
-      const match = !q || name.includes(q);
+      const match = !q || card.dataset.name.includes(q);
       card.style.display = match ? '' : 'none';
       if (match) visible++;
     });
-
     noRes.style.display = visible === 0 ? 'block' : 'none';
+  });
+
+  /* ── Scroll-reveal ── */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 60);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  /* ── Active nav on scroll ── */
+  const sections = ['hero', 'students', 'about'].map(id => document.getElementById(id));
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY + 100;
+    sections.forEach((sec, i) => {
+      if (sec && y >= sec.offsetTop) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        if (navLinks[i]) navLinks[i].classList.add('active');
+      }
+    });
   });
 </script>
 </body>

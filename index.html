@@ -900,6 +900,46 @@
 </footer>
 
 <script>
+  /* ── Blob-based download (bypasses cross-origin download attribute restriction) ── */
+  document.querySelectorAll('.file-item[download]').forEach(link => {
+    link.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      const url      = link.href;
+      const filename = link.getAttribute('download');
+      const pill     = link.querySelector('.file-pill');
+      const origText = pill ? pill.textContent : '';
+
+      /* Loading state */
+      link.style.opacity       = '0.55';
+      link.style.pointerEvents = 'none';
+      if (pill) pill.textContent = '↓';
+
+      try {
+        const resp = await fetch(url, { mode: 'cors' });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const blob = await resp.blob();
+
+        const a = document.createElement('a');
+        a.href     = URL.createObjectURL(blob);
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+
+      } catch (err) {
+        /* Fallback: open in new tab so the user can at least save manually */
+        console.warn('Blob download failed, falling back to new tab:', err);
+        window.open(url, '_blank');
+      } finally {
+        link.style.opacity       = '';
+        link.style.pointerEvents = '';
+        if (pill) pill.textContent = origText;
+      }
+    });
+  });
+
   /* ── Search ── */
   const search = document.getElementById('search');
   const cards  = document.querySelectorAll('.card[data-name]');
